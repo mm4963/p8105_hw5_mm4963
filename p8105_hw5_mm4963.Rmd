@@ -1,0 +1,50 @@
+---
+title: "HW 5"
+author: "Melanie Mayer"
+date: "11/5/2018"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(readr)
+
+
+```
+
+## Problem 1
+
+Below I will read in, merge, and tidy all the data
+ 
+```{r, message = F}
+
+study_data = 
+  tibble(names = list.files("./data/"),
+         comp_names = str_c("./data/", names)) %>% 
+  mutate(study_data = map(comp_names, read_csv)) %>% 
+  unnest() %>%
+  separate(names, into = c("type", "subject"), sep = "_") %>%
+  separate(subject, into = c("subject", "remove"), sep = "\\.") %>%
+  select(-c(comp_names, remove)) %>%
+  gather(key = week, value = obs, week_1:week_8) %>%
+  separate(week, into = c("remove", "week"), sep = "_") %>%
+  select(-c(remove)) %>%
+  mutate(type = factor(type),
+         subject = factor(subject),
+         week = as.integer(week))
+
+```
+
+Below is a spaghetti plot showing observations on each subject over time
+
+
+```{r}
+
+ggplot(study_data, aes(x = week, y = obs, color = subject)) + 
+  geom_line() +
+  facet_grid(~type)
+
+```
+
+Looking at the spaghetti plots we can see the general trends of the two groups. While the control group seems rather stagnent here does seem to be an upward trend in the experimental group.
+
