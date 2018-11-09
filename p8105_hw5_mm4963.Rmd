@@ -122,8 +122,8 @@ prop_tests = homicide_df_selected %>%
   select(c(city_state, estimate, conf.low, conf.high))
  
 
-#view results
-prop_tests %>% 
+#view some results
+head(prop_tests) %>% 
   knitr::kable()
 
 ```
